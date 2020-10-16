@@ -1,0 +1,181 @@
+
+const TimeLengthControl = (props) => {
+  return(
+    <div>
+      <div><label id={props.id+"-label"}> <h2>{props.label} Length</h2> </label></div>
+      <button     id={props.id+"-decrement"} className="btn" 
+        onClick={() => props.handleDecrement(props.id+"Mins", -1)}><i className="fas fa-arrow-down"></i>
+      </button>
+      <span       id={props.id+"-length"}>{props.minutes}</span> 
+      <button     id={props.id+"-increment"} className="btn"
+        onClick={() => props.handleIncrement(props.id+"Mins", 1)}><i className="fas fa-arrow-up"></i>
+      </button>
+    </div>
+  );
+}
+
+const DisplayTime = (props) =>{
+  
+  let minutes = props.minutesRemaining < 10?
+    "0" + props.minutesRemaining:
+    props.minutesRemaining;
+  
+  let seconds = props.secondsRemaining < 10?
+    "0" + props.secondsRemaining:
+    props.secondsRemaining;
+  
+    return(
+      <div>
+        <div><label id="timer-label"><h2>{props.displayLabel}</h2></label></div>
+        <div id="time-left">{minutes + ":" + seconds}
+        </div>
+      </div>
+    );
+}
+
+const ControlButtons = (props) => {
+    return(
+      <div>
+        {props.loop?
+          <button id="start_stop" onClick={props.handleStart} className="btn btn-secondary">PAUSE</button>:
+          <button id="start_stop" onClick={props.handleStart} className="btn btn-secondary">START</button>}
+        <button id="reset" onClick={props.handleReset} className="btn btn-secondary">RESET</button>
+        <div>
+          <a href="https://en.wikipedia.org/wiki/Pomodoro_Technique" target="_blank">
+            <button className="btn btn-info">What is a pomodoro Clock?</button>
+          </a>
+        </div>
+      </div>
+    );
+}
+
+class PomodoroClock extends React.Component{
+  constructor(props){
+    super(props);
+    this.state= {
+      displayLabel: "Session",
+      breakMins: 5,
+      sessionMins: 25,
+      minutesRemaining: 25,
+      secondsRemaining: 0,
+      loop: false,
+      timerStarted: false
+    };
+  }
+  
+  tick = () => {      
+      if (this.state.minutesRemaining === 0 && this.state.secondsRemaining === 0 ) {
+        this.buzzer();
+        return this.state.displayLabel === "Session" ?
+          this.setState( function(state){
+            return {minutesRemaining: state.breakMins,
+                   displayLabel: "Break"} 
+          }) :
+        this.setState( function(state){
+            return {minutesRemaining: state.sessionMins,
+                   displayLabel: "Session"} 
+          })
+      }
+      if (this.state.secondsRemaining === 0) {
+        return this.setState(
+          function(state) {
+            return {secondsRemaining: 59,
+                    minutesRemaining: state.minutesRemaining -1} })
+      }
+      if (this.state.secondsRemaining > 0) {
+        return this.setState(state => { return {secondsRemaining: state.secondsRemaining - 1}} )
+      }
+  }
+  
+  buzzer = () =>{
+    let  playAudio = this.audioBeep.play();
+    playAudio.catch(error => { console.log(error) });
+  }
+  
+  handleStart = () => {
+    this.setState(state => ({
+      loop: !state.loop
+    }));
+    
+    this.state.loop ? 
+      clearInterval(this.timerID) :
+      this.timerID = setInterval( () => this.tick(), 1000 );
+    
+    if (!this.state.timerStarted){
+      this.setState(state => ({
+        timerStarted: true,
+        minutesRemaining: state.sessionMins})
+      )
+    }
+  };
+
+  handleReset = () => {
+    clearInterval(this.timerID);
+    this.setState({
+      displayLabel: "Session",
+      breakMins: 5,
+      sessionMins: 25,
+      minutesRemaining: 25,
+      secondsRemaining: 0,
+      loop: false,
+      timerStarted: false
+    });
+    this.audioBeep.pause();
+    this.audioBeep.currentTime = 0;
+  }
+  
+  handleIncrement = (stateItem, value) => {
+    return this.state[stateItem] < 60 && !this.state.timerStarted?
+      stateItem === "sessionMins"?
+        this.setState((state) => ({
+          minutesRemaining: state.minutesRemaining + value,
+          [stateItem]: state[stateItem] + value})
+        ) :
+        this.setState((state) => ({
+          [stateItem]: state[stateItem] + value})
+        ) : null 
+  }
+  
+  handleDecrement = (stateItem, value) => {
+    return this.state[stateItem] > 1 && !this.state.timerStarted?
+      stateItem === "sessionMins"?
+        this.setState((state) => ({
+          minutesRemaining: state.minutesRemaining + value,
+          [stateItem]: state[stateItem] + value})
+        ) :
+        this.setState((state) => ({
+          [stateItem]: state[stateItem] + value})
+        ) : null 
+  }
+  
+  render(){    
+    return(
+      <div id="container" className="container text-align-center">
+        <h1>Pomodoro Clock</h1>
+
+        <div className="jumbotron text-center border-info">
+          <TimeLengthControl label="Break" id="break" minutes={this.state.breakMins} 
+            handleIncrement={this.handleIncrement} 
+            handleDecrement={this.handleDecrement} />
+          <TimeLengthControl label="Session" id="session" minutes={this.state.sessionMins} 
+            handleIncrement={this.handleIncrement} 
+            handleDecrement={this.handleDecrement} />
+          <DisplayTime
+            displayLabel={this.state.displayLabel}
+            minutesRemaining={this.state.minutesRemaining} 
+            secondsRemaining={this.state.secondsRemaining} />
+          <ControlButtons 
+            loop={this.state.loop} 
+            handleStart={this.handleStart} 
+            handleReset={this.handleReset}/>
+          <audio id="beep" preload="auto" 
+            // src="https://goo.gl/65cBl1"
+            src="http://www.peter-weinberg.com/files/1014/8073/6015/BeepSound.wav"
+            ref={(audio) => { this.audioBeep = audio; }} />
+        </div>
+      </div>
+    );
+  }
+};
+
+ReactDOM.render(<PomodoroClock/>, document.getElementById("root"));

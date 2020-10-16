@@ -1,0 +1,158 @@
+h1{
+  font-size: 3rem;
+  text-align: center;
+  margin:30px 10px;
+}
+
+#container{
+  background-image: url("https://thumbs.dreamstime.com/b/italian-pasta-ingredients-white-wooden-table-top-view-copy-space-63307472.jpg");
+  background-repeat: no-repeat;
+  background-position:25% 50%;
+  background-size: cover;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100vh;
+}
+
+.jumbotron{
+  margin: 10px;
+  font-size: 2rem;
+  padding:10px;
+}
+
+i{
+  font-size: 2rem;
+}
+
+
+@media (min-width: 688px){
+ 
+  h1{
+    font-size: 3rem;
+    text-align: center;
+    margin:30px 10px;
+  }
+
+  #container{
+    background-position:50% 50%;
+    height: 100vh;
+  }
+
+  .jumbotron{
+    height: 500px;
+    margin: 20px;
+    margin-top: 3rem;
+    font-size: 2rem;
+    padding:20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  i{
+    font-size: 2rem;
+  }
+}
+
+@media (orientation: landscape) {
+  
+  h1{
+    font-size: 2rem;
+    margin:1rem;
+  }
+  
+  #container{
+    background-position:50% 50%;
+    height: 100vh;
+  }
+  
+  .jumbotron{
+    height: 75vh;
+    margin: 10px;
+    font-size: 2rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr ;
+    grid-template-rows: 1fr 1fr ;
+    grid-gap: 10px;
+    padding:5px;
+    padding-top: 15px;
+  }
+  
+  i{
+    font-size: 2rem;
+  }
+  
+}
+
+
+@media  (min-width: 767px)  and (min-height: 1023px)  {
+  h1{
+    font-size: 4rem;
+    text-align: center;
+    margin:30px 10px;
+  } 
+  
+  h2{
+    font-size: 3rem;
+  }
+
+  #container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100vh;
+  }
+
+  .jumbotron{
+    height: 800px;
+    margin: 20px;
+    margin-top: 3rem;
+    font-size: 4rem;
+    padding:30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  i{
+    font-size: 3rem;
+  }
+  
+}
+
+@media  (min-width: 1023px)  and (min-height:767px)  {
+  h1{
+    font-size: 4rem;
+    text-align: center;
+    margin:30px 10px;
+  }  
+  
+  h2{
+    font-size: 3rem;
+  }
+
+  #container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100vw;
+    height:auto;
+  }
+
+  .jumbotron{
+    height: 680px;
+    margin: 20px;
+    margin-top: 3rem;
+    font-size: 3rem;
+    padding:30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  i{
+    font-size: 3rem;
+  }
+  
+}
